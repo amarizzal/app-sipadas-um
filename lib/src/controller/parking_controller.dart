@@ -1,7 +1,6 @@
 import 'package:app_sipadas_um/src/model/parking_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 class ParkingController extends GetxController {
   static ParkingController get instance => Get.find();

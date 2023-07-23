@@ -1,8 +1,5 @@
-import 'package:app_sipadas_um/src/controller/parking_controller.dart';
-import 'package:app_sipadas_um/src/model/parking_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,7 +13,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    final controller = Get.put(ParkingController());
     return Scaffold(
       appBar: AppBar(
         title: Text("Sipadas UM",

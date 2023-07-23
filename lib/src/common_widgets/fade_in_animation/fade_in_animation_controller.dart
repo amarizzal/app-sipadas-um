@@ -1,6 +1,5 @@
 import 'package:app_sipadas_um/src/screens/home_screen.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 class FadeInAnimationController extends GetxController {
   static FadeInAnimationController get find => Get.find();
