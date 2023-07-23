@@ -1,3 +1,6 @@
+import 'package:app_sipadas_um/src/controller/parking_controller.dart';
+import 'package:app_sipadas_um/src/model/parking_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+    final controller = Get.put(ParkingController());
     return Scaffold(
       appBar: AppBar(
         title: Text("Sipadas UM",
@@ -33,30 +37,46 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
           onPressed: () {},
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            // crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                "2",
-                style: TextStyle(fontSize: 30),
-              ),
-              Text(
-                "/",
-                style: TextStyle(fontSize: 20),
-              ),
-              Text(
-                "10",
-                style: TextStyle(fontSize: 13),
-              ),
-            ],
-          ),
+          child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('system-parking')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  int count = 0;
+                  for (var i = 0; i < snapshot.data!.docs.length; i++) {
+                    if (snapshot.data!.docs[i]['client']) {
+                      count++;
+                    }
+                  }
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    // crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        count.toString(),
+                        style: TextStyle(fontSize: 30),
+                      ),
+                      Text(
+                        "/",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Text(
+                        "10",
+                        style: TextStyle(fontSize: 13),
+                      ),
+                    ],
+                  );
+                } else {
+                  return const Text("tes");
+                }
+              }),
           shape: CircleBorder(),
           backgroundColor: Colors.blue,
           foregroundColor: Colors.white),
       body: SingleChildScrollView(
         child: Container(
-            height: height * 0.8,
+            height: height * 0.9,
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -83,63 +103,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Column(
                       children: [
-                        Container(
-                          width: width * 0.35,
-                          height: height * 0.1,
-                          margin: EdgeInsets.all(5),
-                          padding: EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                              color: Colors.black12,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20))),
-                          child: Center(
-                              child: Text(
-                            "1",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold),
-                          )),
-                        ),
-                        Container(
-                          width: width * 0.35,
-                          height: height * 0.1,
-                          margin: EdgeInsets.all(5),
-                          padding: EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                              color: Colors.black12,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20))),
-                          child: Center(
-                              child: Text(
-                            "2",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold),
-                          )),
-                        ),
-                        Container(
-                          width: width * 0.35,
-                          height: height * 0.1,
-                          margin: EdgeInsets.all(5),
-                          padding: EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 87, 227, 106),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20))),
-                          child: Center(
-                              child: Text(
-                            "3",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold),
-                          )),
-                        ),
                         Container(
                           width: width * 0.35,
                           height: height * 0.1,
@@ -176,6 +143,49 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontWeight: FontWeight.bold),
                           )),
                         ),
+                        SizedBox(
+                          height: 270,
+                          width: width * 0.37,
+                          child: StreamBuilder<QuerySnapshot>(
+                              stream: FirebaseFirestore.instance
+                                  .collection('system-parking')
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return ListView.builder(
+                                      itemCount: snapshot.data!.docs.length,
+                                      itemBuilder: (c, index) {
+                                        DocumentSnapshot doc =
+                                            snapshot.data!.docs[index];
+                                        return Container(
+                                          width: width * 0.35,
+                                          height: height * 0.1,
+                                          margin: EdgeInsets.all(5),
+                                          padding: EdgeInsets.all(20),
+                                          decoration: BoxDecoration(
+                                              color: doc['client']
+                                                  ? Color.fromARGB(
+                                                      255, 87, 227, 106)
+                                                  : Colors.black12,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(20))),
+                                          child: Center(
+                                              child: Text(
+                                            doc['number'],
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.bold),
+                                          )),
+                                        );
+                                      });
+                                } else {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                              }),
+                        ),
                       ],
                     ),
                     Image(
@@ -189,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           margin: EdgeInsets.all(5),
                           padding: EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 87, 227, 106),
+                              color: Colors.black12,
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20))),
                           child: Center(

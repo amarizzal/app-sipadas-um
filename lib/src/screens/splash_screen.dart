@@ -12,22 +12,23 @@ class SplashScreen extends StatelessWidget {
     final controller = Get.put(FadeInAnimationController());
     controller.startSplashAnimation();
     return Scaffold(
+        backgroundColor: Colors.white,
         body: Stack(
-      children: [
-        TFadeAnimation(
-          durationInMs: 1600,
-          child: Image(
-            image: AssetImage("assets/images/Lambang-UM.png"),
-          ),
-          animate: TAnimatePosition(
-              topAfter: 220,
-              topBefore: 220,
-              leftBefore: -10,
-              leftAfter: 0,
-              rightAfter: 0,
-              rightBefore: 0),
-        ),
-      ],
-    ));
+          children: [
+            TFadeAnimation(
+              durationInMs: 1600,
+              child: Image(
+                image: AssetImage("assets/images/Lambang-UM.png"),
+              ),
+              animate: TAnimatePosition(
+                  topAfter: 220,
+                  topBefore: 220,
+                  leftBefore: -10,
+                  leftAfter: 0,
+                  rightAfter: 0,
+                  rightBefore: 0),
+            ),
+          ],
+        ));
   }
 }

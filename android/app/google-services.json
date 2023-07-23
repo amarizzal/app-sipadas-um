@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "986575101969",
+    "firebase_url": "https://smart-parking-system-lora-iot-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "smart-parking-system-lora-iot",
+    "storage_bucket": "smart-parking-system-lora-iot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:986575101969:android:5b5f4d7a5dd2ba85cb91b0",
+        "android_client_info": {
+          "package_name": "com.example.app_sipadas_um"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "986575101969-n0l6djndio2o8gjo1h4u6a7outeo6qa9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtuqpA4SMdKCFMDyVeYy5AxY3mqB3KjwU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "986575101969-n0l6djndio2o8gjo1h4u6a7outeo6qa9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
