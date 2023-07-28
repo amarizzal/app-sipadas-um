@@ -1,14 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ParkingModel {
-  final String number;
+  final num number;
   final bool client;
-  final bool portal;
+  final num portal;
 
   const ParkingModel(
       {required this.client, required this.portal, required this.number});
 
   toJson() {
+    return {"number": number, "client": client, "portal": portal};
+  }
+
+  Map<String, dynamic> toMap() {
     return {"number": number, "client": client, "portal": portal};
   }
 

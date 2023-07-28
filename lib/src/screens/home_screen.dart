@@ -1,5 +1,9 @@
+import 'package:app_sipadas_um/src/model/parking_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,10 +13,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final fb = FirebaseDatabase.instance;
   @override
   Widget build(BuildContext context) {
+    final ref = fb.ref().child('SystemParkir');
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+    var count = 0;
     return Scaffold(
       appBar: AppBar(
         title: Text("Sipadas UM",
@@ -33,39 +40,49 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
           onPressed: () {},
-          child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('system-parking')
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  int count = 0;
-                  for (var i = 0; i < snapshot.data!.docs.length; i++) {
-                    if (snapshot.data!.docs[i]['client']) {
-                      count++;
-                    }
-                  }
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    // crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        count.toString(),
-                        style: TextStyle(fontSize: 30),
-                      ),
-                      Text(
-                        "/",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Text(
-                        "10",
-                        style: TextStyle(fontSize: 13),
-                      ),
-                    ],
-                  );
-                } else {
-                  return const Text("tes");
+          child: FirebaseAnimatedList(
+              reverse: true,
+              query: ref,
+              itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                  Animation<double> animation, int index) {
+                Map student = snapshot.value as Map;
+                student['key'] = snapshot.key;
+
+                if (student['number'] == 1) {
+                  count = 0;
                 }
+                if (student['portal'] == 1) {
+                  print(student['portal']);
+                  count++;
+                }
+                return Column(
+                  children: [
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      // crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          count.toString(),
+                          style: TextStyle(fontSize: 30),
+                        ),
+                        Text(
+                          "/",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Text(
+                          "10",
+                          style: TextStyle(fontSize: 13),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
               }),
           shape: CircleBorder(),
           backgroundColor: Colors.blue,
@@ -142,44 +159,20 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(
                           height: 270,
                           width: width * 0.37,
-                          child: StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance
-                                  .collection('system-parking')
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return ListView.builder(
-                                      itemCount: snapshot.data!.docs.length,
-                                      itemBuilder: (c, index) {
-                                        DocumentSnapshot doc =
-                                            snapshot.data!.docs[index];
-                                        return Container(
-                                          width: width * 0.35,
-                                          height: height * 0.1,
-                                          margin: EdgeInsets.all(5),
-                                          padding: EdgeInsets.all(20),
-                                          decoration: BoxDecoration(
-                                              color: doc['client']
-                                                  ? Color.fromARGB(
-                                                      255, 87, 227, 106)
-                                                  : Colors.black12,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(20))),
-                                          child: Center(
-                                              child: Text(
-                                            doc['number'],
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 25,
-                                                fontWeight: FontWeight.bold),
-                                          )),
-                                        );
-                                      });
-                                } else {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
+                          child: FirebaseAnimatedList(
+                              query: ref,
+                              itemBuilder: (BuildContext context,
+                                  DataSnapshot snapshot,
+                                  Animation<double> animation,
+                                  int index) {
+                                Map student = snapshot.value as Map;
+                                print(student['client']);
+                                student['key'] = snapshot
+                                    .key; //created a class called message and added all messages in a List of class message
+                                return listParking(
+                                    width: width,
+                                    height: height,
+                                    student: student);
                               }),
                         ),
                       ],
@@ -286,6 +279,40 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             )),
       ),
+    );
+  }
+}
+
+class listParking extends StatelessWidget {
+  const listParking({
+    super.key,
+    required this.width,
+    required this.height,
+    required this.student,
+  });
+
+  final double width;
+  final double height;
+  final Map student;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width * 0.35,
+      height: height * 0.1,
+      margin: EdgeInsets.all(5),
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+          color: student['client'] == 1
+              ? Color.fromARGB(255, 86, 224, 86)
+              : Colors.black12,
+          borderRadius: BorderRadius.all(Radius.circular(20))),
+      child: Center(
+          child: Text(
+        student['number'].toString(),
+        style: TextStyle(
+            color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
+      )),
     );
   }
 }
