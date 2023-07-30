@@ -51,8 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (student['number'] == 1) {
                   count = 0;
                 }
-                if (student['portal'] == 1) {
-                  print(student['portal']);
+                if (student['portal']['status'] == 1) {
+                  // print(student['portal']);
                   count++;
                 }
                 return Column(
