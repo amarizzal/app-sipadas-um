@@ -17,6 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final ref = fb.ref().child('SystemParkir');
+    final ref2 = fb.ref().child('SystemPortal');
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     var count = 0;
@@ -41,34 +42,31 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
           onPressed: () {},
           child: FirebaseAnimatedList(
-              reverse: true,
-              query: ref,
+              query: ref2,
               itemBuilder: (BuildContext context, DataSnapshot snapshot,
                   Animation<double> animation, int index) {
                 Map student = snapshot.value as Map;
                 student['key'] = snapshot.key;
 
-                if (student['number'] == 1) {
-                  count = 0;
-                }
-                if (student['portal']['status'] == 1) {
-                  // print(student['portal']);
-                  count++;
-                }
+                // if (student['number'] == 1) {
+                //   count = 0;
+                // }
+                // if (student['portal'] == 1) {
+                //   // print(student['portal']);
+                //   count++;
+                // }
                 return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      height: 5,
+                      height: 6,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      // crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          height: 10,
-                        ),
                         Text(
-                          count.toString(),
+                          student['portal'].toString(),
                           style: TextStyle(fontSize: 30),
                         ),
                         Text(
